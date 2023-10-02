@@ -1,0 +1,103 @@
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<link rel="stylesheet" href="style.css">
+
+<div id="app">
+    <h1>Welcome to Monsters Slayers</h1>
+    <div class="card" id="align">
+        <div id="info">
+            <h1>Player</h1>
+            <progress :value="lifePlayer" max="100"></progress>
+            <h3>{{ lifePlayer }}%</h3>
+        </div>
+        <div id="info">
+            <h1>Monster</h1>
+            <progress :value="lifeMonster" max="100"></progress>
+            <h3>{{ lifeMonster }}%</h3>
+        </div>
+    </div>
+
+    <div v-if="lifePlayer <= 0">
+        <h2 id="red">You are loser!</h2>
+    </div>
+    <div v-else-if="lifeMonster <= 0">
+        <h2 id="green">You are winner!</h2>
+    </div>
+
+    <div v-if="!quit" class="card" id="align">
+        <button @click="attack()" id="attack">ATTACK</button>
+        <button @click="special()" id="special">SPECIAL ATTACK</button>
+        <button @click="health()" id="health">HEALTH</button>
+        <button @click="quit = true" id="quit">QUIT</button>
+    </div>
+    <div v-else>
+        <button @click="start()" id="start">Start new Game</button>
+    </div>
+
+    <div v-if="arrayActions.length" class="card">
+        <p v-for="actions in arrayActions">
+            {{ actions }}
+        </p>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            lifePlayer: 100,
+            lifeMonster: 100,
+            quit: false,
+            arrayActions: []
+        },
+        watch: {
+            lifePlayer(newValue, oldValue) {
+                if(newValue <= 0) {
+                    this.lifePlayer = 0;
+                    return this.quit = true;
+                } 
+            },
+            lifeMonster(newValue, oldValue) {
+                if(newValue <= 0) {
+                    this.lifeMonster = 0;
+                    return this.quit = true;
+                }
+            }
+        },
+        methods: {
+            attack() {
+                var attackPlayer = Math.floor((Math.random() * (10 - 2 + 1) + 2));
+                this.lifeMonster = this.lifeMonster - attackPlayer;
+                this.arrayActions.push('PLAYER ATTACK MONSTER WITH ' + attackPlayer.toString());
+                
+                var attackMonster = Math.floor((Math.random() * (12 - 5 + 1) + 5));
+                this.lifePlayer = this.lifePlayer - attackMonster;
+                this.arrayActions.push('MONSTER ATTACK PLAYER WITH ' + attackMonster.toString());
+            },
+            special() {
+                var attackPlayer = Math.floor((Math.random() * (18 - 7 + 1) + 7));
+                this.lifeMonster = this.lifeMonster - attackPlayer;
+                this.arrayActions.push('PLAYER SPECIAL ATTACK MONSTER WITH ' + attackPlayer.toString());
+                
+                var attackMonster = Math.floor((Math.random() * (12 - 5 + 1) + 5));
+                this.lifePlayer = this.lifePlayer - attackMonster;
+                this.arrayActions.push('MONSTER ATTACK PLAYER WITH ' + attackMonster.toString());
+            },
+            health() {
+                var attackMonster = Math.floor((Math.random() * (12 - 5 + 1) + 5));
+                this.lifePlayer = this.lifePlayer - attackMonster;
+                this.arrayActions.push('MONSTER ATTACK PLAYER WITH ' + attackMonster.toString());
+                
+                var healthPlayer = Math.floor((Math.random() * (14 - 2 + 1) + 2));
+                this.lifePlayer = this.lifePlayer + healthPlayer;
+                this.arrayActions.push('PLAYER HEALTH' + healthPlayer.toString());
+            },
+            start() {
+                this.arrayActions = [];
+                this.quit = false;
+                this.lifePlayer = 100;
+                this.lifeMonster = 100;
+            }
+        }
+    })
+</script>
